@@ -33,8 +33,10 @@ const createComputation = async (req, res) => {
 		const { number } = result;
 
 		const startTime = performance.now();
+		// const startTime = new Date().getTime();
 		const squareRootNumber = squareRoot(number);
 		const endTime = performance.now();
+		// const endTime = new Date().getTime();
 		const timingPerformace = endTime - startTime;
 		// console.log(startTime);
 		// console.log(endTime);
@@ -44,6 +46,41 @@ const createComputation = async (req, res) => {
 				number: number,
 				result: squareRootNumber,
 				time: timingPerformace,
+			},
+		});
+		res.status(201).json(computation);
+	} catch (error) {
+		res.status(400).json({ msg: error.message });
+	}
+};
+
+const createComputation2 = async (req, res) => {
+	try {
+		const result = await schema.validateAsync(req.body);
+		const { number } = result;
+		const startTime = performance.now();
+		let squareRoot;
+		try {
+			const result =
+				await prisma.$queryRaw`CALL calculate_square_root(${number})`;
+			squareRoot = parseInt(result[0].f0);
+
+			// Handle hasil panggilan stored procedure di sini
+			console.log('Hasil stored procedure:', squareRoot);
+		} catch (error) {
+			console.error('Error calling stored procedure:', error);
+		} finally {
+			// Jangan lupa untuk menutup koneksi Prisma
+			await prisma.$disconnect();
+		}
+		const endTime = performance.now();
+		const timingPerformace = endTime - startTime;
+
+		const computation = await prisma.computation.create({
+			data: {
+				number: number,
+				result: squareRoot,
+				time: parseFloat(parseFloat(timingPerformace).toFixed(4)),
 			},
 		});
 		res.status(201).json(computation);
@@ -88,6 +125,7 @@ module.exports = {
 	getComputations,
 	getComputationById,
 	createComputation,
+	createComputation2,
 	// updateComputation,
 	// deleteComputation,
 };
