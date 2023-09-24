@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 const getCalculatedApi = async (req, res) => {
 	try {
-		const response = await prisma.api.findMany();
+		const response = await prisma.apiFunction.findMany();
 		res.status(200).json(response);
 	} catch (error) {
 		res.status(500).json({ msg: error.message });
@@ -36,7 +36,7 @@ const createCalculatedApi = async (req, res) => {
 		// console.log(startTime);
 		// console.log(endTime);
 
-		const computation = await prisma.api.create({
+		const computation = await prisma.apiFunction.create({
 			data: {
 				number: number,
 				result: squareRootNumber,
