@@ -10,14 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Product {
+model Plsql {
   id        Int      @id @default(autoincrement())
-  name      String
-  price     Int
+  number    Int
+  result    Float
+  time      Float
   createdAt DateTime @default(now())
 }
 
-model Computation {
+model Api {
   id        Int      @id @default(autoincrement())
   number    Int
   result    Float

@@ -5,29 +5,24 @@ const { performance } = require('perf_hooks');
 
 const prisma = new PrismaClient();
 
-const getComputations = async (req, res) => {
+const getCalculatedApi = async (req, res) => {
 	try {
-		const response = await prisma.computation.findMany();
+		const response = await prisma.api.findMany();
+		res.status(200).json(response);
+	} catch (error) {
+		res.status(500).json({ msg: error.message });
+	}
+};
+const getCalculatedPlsql = async (req, res) => {
+	try {
+		const response = await prisma.plsql.findMany();
 		res.status(200).json(response);
 	} catch (error) {
 		res.status(500).json({ msg: error.message });
 	}
 };
 
-const getComputationById = async (req, res) => {
-	try {
-		const response = await prisma.computation.findUnique({
-			where: {
-				id: Number(req.params.id),
-			},
-		});
-		res.status(200).json(response);
-	} catch (error) {
-		res.status(404).json({ msg: error.message });
-	}
-};
-
-const createComputation = async (req, res) => {
+const createCalculatedApi = async (req, res) => {
 	try {
 		const result = await schema.validateAsync(req.body);
 		const { number } = result;
@@ -41,7 +36,7 @@ const createComputation = async (req, res) => {
 		// console.log(startTime);
 		// console.log(endTime);
 
-		const computation = await prisma.computation.create({
+		const computation = await prisma.api.create({
 			data: {
 				number: number,
 				result: squareRootNumber,
@@ -54,7 +49,7 @@ const createComputation = async (req, res) => {
 	}
 };
 
-const createComputation2 = async (req, res) => {
+const createCalculatedPlsql = async (req, res) => {
 	try {
 		const result = await schema.validateAsync(req.body);
 		const { number } = result;
@@ -63,7 +58,7 @@ const createComputation2 = async (req, res) => {
 		try {
 			const result =
 				await prisma.$queryRaw`CALL calculate_square_root(${number})`;
-			squareRoot = parseInt(result[0].f0);
+			squareRoot = parseFloat(result[0].f0);
 
 			// Handle hasil panggilan stored procedure di sini
 			console.log('Hasil stored procedure:', squareRoot);
@@ -76,16 +71,29 @@ const createComputation2 = async (req, res) => {
 		const endTime = performance.now();
 		const timingPerformace = endTime - startTime;
 
-		const computation = await prisma.computation.create({
+		const computation = await prisma.plsql.create({
 			data: {
 				number: number,
 				result: squareRoot,
-				time: parseFloat(parseFloat(timingPerformace).toFixed(4)),
+				time: parseFloat(parseFloat(timingPerformace).toFixed(4) / 1000),
 			},
 		});
 		res.status(201).json(computation);
 	} catch (error) {
 		res.status(400).json({ msg: error.message });
+	}
+};
+
+const getComputationById = async (req, res) => {
+	try {
+		const response = await prisma.api.findUnique({
+			where: {
+				id: Number(req.params.id),
+			},
+		});
+		res.status(200).json(response);
+	} catch (error) {
+		res.status(404).json({ msg: error.message });
 	}
 };
 
@@ -122,10 +130,11 @@ const createComputation2 = async (req, res) => {
 // };
 
 module.exports = {
-	getComputations,
+	getCalculatedPlsql,
+	getCalculatedApi,
 	getComputationById,
-	createComputation,
-	createComputation2,
+	createCalculatedApi,
+	createCalculatedPlsql,
 	// updateComputation,
 	// deleteComputation,
 };

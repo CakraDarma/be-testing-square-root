@@ -1,19 +1,21 @@
 const express = require('express');
 const {
-	getComputations,
+	getCalculatedApi,
+	getCalculatedPlsql,
 	getComputationById,
-	createComputation,
-	createComputation2,
+	createCalculatedApi,
+	createCalculatedPlsql,
 	// updateComputation,
 	// deleteComputation,
 } = require('./controller.js');
 
 const router = express.Router();
 
-router.get('/computations', getComputations);
+router.get('/calculated-api', getCalculatedApi);
+router.get('/calculated-plsql', getCalculatedPlsql);
 router.get('/computations/:id', getComputationById);
-router.post('/computations', createComputation);
-router.post('/computations2', createComputation2);
+router.post('/calculated-api', createCalculatedApi);
+router.post('/calculated-plsql', createCalculatedPlsql);
 // router.patch('/computations/:id', updateComputation);
 // router.delete('/computations/:id', deleteComputation);
 
