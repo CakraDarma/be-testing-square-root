@@ -85,16 +85,16 @@ const createCalculatedPlsql = async (req, res) => {
 };
 
 const getComputationById = async (req, res) => {
-	try {
-		const response = await prisma.api.findUnique({
-			where: {
-				id: Number(req.params.id),
-			},
-		});
-		res.status(200).json(response);
-	} catch (error) {
-		res.status(404).json({ msg: error.message });
-	}
+	// try {
+	// 	const response = await prisma.api.findUnique({
+	// 		where: {
+	// 			id: Number(req.params.id),
+	// 		},
+	// 	});
+	// 	res.status(200).json(response);
+	// } catch (error) {
+	// 	res.status(404).json({ msg: error.message });
+	// }
 };
 
 // const updateComputation = async (req, res) => {
