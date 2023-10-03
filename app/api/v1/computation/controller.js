@@ -28,14 +28,9 @@ const createCalculatedApi = async (req, res) => {
 		const { number } = result;
 
 		const startTime = performance.now();
-		// const startTime = new Date().getTime();
 		const squareRootNumber = squareRoot(number);
 		const endTime = performance.now();
-		// const endTime = new Date().getTime();
 		const timingPerformace = endTime - startTime;
-		// console.log(startTime);
-		// console.log(endTime);
-
 		const computation = await prisma.apiFunction.create({
 			data: {
 				number: number,
@@ -56,9 +51,11 @@ const createCalculatedPlsql = async (req, res) => {
 		const startTime = performance.now();
 		let squareRoot;
 		try {
+			// const result = await prisma.$queryRaw`SELECT calculate_square_root(${number})`;
 			const result =
-				await prisma.$queryRaw`CALL calculate_square_root(${number})`;
-			squareRoot = parseFloat(result[0].f0);
+				await prisma.$queryRaw`SELECT calculate_square_root(${number}) AS square_root`;
+			console.log('Square Root:', result[0].square_root);
+			squareRoot = parseFloat(result[0].square_root);
 
 			// Handle hasil panggilan stored procedure di sini
 			console.log('Hasil stored procedure:', squareRoot);
@@ -75,7 +72,7 @@ const createCalculatedPlsql = async (req, res) => {
 			data: {
 				number: number,
 				result: squareRoot,
-				time: parseFloat(parseFloat(timingPerformace).toFixed(4) / 1000),
+				time: parseFloat(parseFloat(timingPerformace).toFixed(4) / 10000),
 			},
 		});
 		res.status(201).json(computation);

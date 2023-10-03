@@ -1,10 +1,9 @@
 function squareRoot(bilangan) {
-	if (bilangan === 0) return 0; // Penanganan khusus untuk akar dari 0
+	if (bilangan === 0) return 0;
 
-	var approx = bilangan / 2; // Pendekatan awal, bisa disesuaikan sesuai kebutuhan
+	var approx = bilangan / 2;
 
 	for (var i = 0; i < 10; i++) {
-		// Lakukan iterasi beberapa kali (10 kali sebagai contoh)
 		approx = 0.5 * (approx + bilangan / approx);
 	}
 
