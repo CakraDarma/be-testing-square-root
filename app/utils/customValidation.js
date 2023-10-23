@@ -46,13 +46,13 @@ const message = {
 	},
 
 	number: {
-		'number.base': '{{#label}} must be a number',
-		'number.greater': '{{#label}} must be greater than {{#limit}}',
+		'number.base': 'Inputan harus berupa angka yang valid',
+		'number.greater': 'Inputan harus lebih besar atau sama dengan {{#limit}}',
 		'number.infinity': '{{#label}} cannot be infinity',
-		'number.integer': '{{#label}} must be an integer',
+		'number.integer': '{{#label}} Harus bilangan integer',
 		'number.less': '{{#label}} must be less than {{#limit}}',
 		'number.max': '{{#label}} must be less than or equal to {{#limit}}',
-		'number.min': '{{#label}} must be greater than or equal to {{#limit}}',
+		'number.min': 'Inputan harus lebih besar atau sama dengan {{#limit}}',
 		'number.multiple': '{{#label}} must be a multiple of {{#multiple}}',
 		'number.negative': '{{#label}} must be a negative number',
 		'number.port': '{{#label}} must be a valid port',
@@ -60,6 +60,7 @@ const message = {
 		'number.precision':
 			'{{#label}} must have no more than {{#limit}} decimal places',
 		'number.unsafe': '{{#label}} must be a safe number',
+		'any.required': 'Nilai wajib diisi',
 	},
 
 	date: {
