@@ -31,17 +31,26 @@ model ApiFunction {
 }
 
 model User {
-  id       String        @id @default(uuid())
+  id        String               @id @default(uuid())
   // roleId   String        @default("1")
   // role     Role          @relation(fields: [roleId], references: [id])
-  email    String        @unique
-  password String
-  nama     String
-  nim      String
-  otp      Int
-  status   String        @default("tidak aktif")
-  api      ApiFunction[]
-  plsql    Plsql[]
+  email     String               @unique
+  password  String
+  nama      String
+  nim       String
+  otp       Int
+  status    String               @default("tidak aktif")
+  api       ApiFunction[]
+  plsql     Plsql[]
+  userToken User_refresh_token[]
+}
+
+model User_refresh_token {
+  id           Int      @id @default(autoincrement())
+  refreshToken String
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
 }
 
 // model Role {

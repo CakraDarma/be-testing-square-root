@@ -105,8 +105,6 @@ const active = async (req) => {
 	});
 
 	if (!check) throw new NotFoundError('User belum terdaftar');
-	console.log(check.otp);
-	console.log(otp);
 
 	if (check && check.otp !== otp) throw new BadRequestError('Kode otp salah');
 

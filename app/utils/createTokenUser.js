@@ -4,8 +4,9 @@ const createTokenUser = (user) => {
 	return {
 		nama: user.nama,
 		userId: user.id,
-		role: user.role.nama,
+		// role: user.role.nama,
 		email: user.email,
+		nim: user.nim,
 	};
 };
 
