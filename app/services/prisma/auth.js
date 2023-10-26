@@ -51,7 +51,7 @@ const signup = async (req) => {
 	} else if (result && result.status == 'aktif') {
 		return 'Email Sudah terdaftar';
 	}
-	// await otpMail(email, result);
+	await otpMail(email, result);
 	delete result.id;
 	delete result.password;
 	delete result.otp;
