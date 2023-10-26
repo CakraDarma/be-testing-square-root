@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 const { otpMail } = require('../mail');
 
 const signup = async (req) => {
-	const { roleId, email, password, nama, telepon } = req.body;
+	const { email, password, nama, nim } = req.body;
 
 	// jika email dan status tidak aktif
 	let result = await prisma.user.findFirst({
@@ -31,8 +31,7 @@ const signup = async (req) => {
 			data: {
 				nama,
 				email,
-				roleId: Number(roleId),
-				telepon,
+				nim,
 				password: await bcrypt.hash(password, 12),
 				otp: Math.floor(Math.random() * 9999),
 			},
@@ -44,8 +43,7 @@ const signup = async (req) => {
 			data: {
 				nama,
 				email,
-				roleId: Number(roleId),
-				telepon,
+				nim,
 				password: await bcrypt.hash(password, 12),
 				otp: Math.floor(Math.random() * 9999),
 			},
@@ -56,7 +54,6 @@ const signup = async (req) => {
 	// await otpMail(email, result);
 	delete result.id;
 	delete result.password;
-	delete result.roleId;
 	delete result.otp;
 	return result;
 };
@@ -71,9 +68,6 @@ const signin = async (req) => {
 	let result = await prisma.user.findUnique({
 		where: {
 			email: email,
-		},
-		include: {
-			role: true,
 		},
 	});
 
@@ -99,7 +93,7 @@ const signin = async (req) => {
 		userId: result.id,
 	});
 
-	return { token, refreshToken, role: result.role, email: result.email };
+	return { token, refreshToken, email: result.email };
 };
 
 const active = async (req) => {

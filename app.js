@@ -8,9 +8,9 @@ const app = express();
 
 // router
 // const imagesRouter = require('./app/api/v1/images/router');
-// const authCMSRouter = require('./app/api/v1/auth/router');
 // const rolesRoute = require('./app/api/v1/roles/router');
-// const userRefreshTokenRoute = require('./app/api/v1/userRefreshToken/router');
+const authCMSRouter = require('./app/api/v1/auth/router');
+const userRefreshTokenRoute = require('./app/api/v1/userRefreshToken/router');
 const productRoute = require('./app/api/v1/products/router');
 const computationRoute = require('./app/api/v1/computation/router');
 
@@ -32,9 +32,9 @@ app.get('/', (req, res) => {
 });
 
 // app.use(`${v1}/cms`, imagesRouter);
-// app.use(`${v1}/cms`, authCMSRouter);
 // app.use(`${v1}/cms`, rolesRoute);
-// app.use(`${v1}/cms`, userRefreshTokenRoute);
+app.use(authCMSRouter);
+app.use(userRefreshTokenRoute);
 app.use(productRoute);
 app.use(computationRoute);
 

@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,6 +16,8 @@ model Plsql {
   result    Float
   time      Float
   createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model ApiFunction {
@@ -24,4 +26,26 @@ model ApiFunction {
   result    Float
   time      Float
   createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }
+
+model User {
+  id       String        @id @default(uuid())
+  // roleId   String        @default("1")
+  // role     Role          @relation(fields: [roleId], references: [id])
+  email    String        @unique
+  password String
+  nama     String
+  nim      String
+  otp      Int
+  status   String        @default("tidak aktif")
+  api      ApiFunction[]
+  plsql    Plsql[]
+}
+
+// model Role {
+//   id   String @id @default(uuid())
+//   nama String
+//   user User[] 
+// }
