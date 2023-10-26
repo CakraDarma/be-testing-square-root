@@ -46,8 +46,8 @@ model User {
 }
 
 model User_refresh_token {
-  id           Int      @id @default(autoincrement())
-  refreshToken String
+  id           String   @id @default(uuid())
+  refreshToken String   @db.Text
   userId       String
   user         User     @relation(fields: [userId], references: [id])
   createdAt    DateTime @default(now())

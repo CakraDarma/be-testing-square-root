@@ -6,7 +6,6 @@ const {
 	createJWT,
 	createTokenUser,
 } = require('../../utils');
-const Users = require('../../api/v1/users/model');
 const { NotFoundError } = require('../../errors');
 
 const createUserRefreshToken = async (payload) => {
@@ -39,9 +38,6 @@ const getUserRefreshToken = async (req) => {
 	const userCheck = await prisma.user.findUnique({
 		where: {
 			email: payload.email,
-		},
-		include: {
-			role: true,
 		},
 	});
 
