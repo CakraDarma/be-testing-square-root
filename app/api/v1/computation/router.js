@@ -9,13 +9,18 @@ const {
 	// deleteComputation,
 } = require('./controller.js');
 
+const {
+	authenticateUser,
+	authorizeRoles,
+} = require('../../../middlewares/auth');
+
 const router = express.Router();
 
-router.get('/calculated-api', getCalculatedApi);
-router.get('/calculated-plsql', getCalculatedPlsql);
-router.get('/computations/:id', getComputationById);
-router.post('/calculated-api', createCalculatedApi);
-router.post('/calculated-plsql', createCalculatedPlsql);
+router.get('/calculated-api', authenticateUser, getCalculatedApi);
+router.get('/calculated-plsql', authenticateUser, getCalculatedPlsql);
+router.get('/computations/:id', authenticateUser, getComputationById);
+router.post('/calculated-api', authenticateUser, createCalculatedApi);
+router.post('/calculated-plsql', authenticateUser, createCalculatedPlsql);
 // router.patch('/computations/:id', updateComputation);
 // router.delete('/computations/:id', deleteComputation);
 

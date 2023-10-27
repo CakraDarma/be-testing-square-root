@@ -8,8 +8,6 @@ const authenticateUser = async (req, res, next) => {
 		// check header
 		const authHeader = req.headers.authorization;
 
-		console.log(authHeader);
-
 		if (authHeader && authHeader.startsWith('Bearer')) {
 			token = authHeader.split(' ')[1];
 		}
@@ -24,9 +22,8 @@ const authenticateUser = async (req, res, next) => {
 		req.user = {
 			nama: payload.nama,
 			userId: payload.userId,
-			role: payload.role,
 			email: payload.email,
-			telepon: payload.telepon,
+			nim: payload.nim,
 		};
 
 		next();
