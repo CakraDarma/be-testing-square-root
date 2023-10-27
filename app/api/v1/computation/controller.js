@@ -172,7 +172,7 @@ const createCalculatedPlsql = async (req, res) => {
 			// const result = await prisma.$queryRaw`SELECT calculate_square_root(${number})`;
 			const result =
 				await prisma.$queryRaw`SELECT calculate_square_root(${number}) AS square_root`;
-			console.log('Square Root:', result[0].square_root);
+			// console.log('Square Root:', result[0].square_root);
 			squareRoot = parseFloat(result[0].square_root);
 
 			// Handle hasil panggilan stored procedure di sini
