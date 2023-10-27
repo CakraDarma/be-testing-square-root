@@ -1,22 +1,139 @@
 const { PrismaClient } = require('@prisma/client');
 const { schema } = require('./validator');
 const { squareRoot } = require('../../../utils');
+const {
+	calculateAverageProcessingTime,
+	findFastestProcessingTime,
+	findSlowestProcessingTime,
+} = require('../../../utils/process');
 const { performance } = require('perf_hooks');
 
 const prisma = new PrismaClient();
 
 const getCalculatedApi = async (req, res) => {
+	const { sort } = req.query;
 	try {
-		const response = await prisma.apiFunction.findMany();
+		let response;
+		if (sort == 'desc') {
+			response = await prisma.apiFunction.findMany({
+				orderBy: {
+					time: 'desc',
+				},
+			});
+		} else if (sort == 'asc') {
+			response = await prisma.apiFunction.findMany({
+				orderBy: {
+					time: 'asc',
+				},
+			});
+		} else {
+			response = await prisma.apiFunction.findMany();
+		}
 		res.status(200).json(response);
 	} catch (error) {
 		res.status(500).json({ msg: error.message });
 	}
 };
+
 const getCalculatedPlsql = async (req, res) => {
 	try {
-		const response = await prisma.plsql.findMany();
+		let response;
+		if (sort == 'desc') {
+			response = await prisma.plsql.findMany({
+				orderBy: {
+					time: 'desc',
+				},
+			});
+		} else if (sort == 'asc') {
+			response = await prisma.plsql.findMany({
+				orderBy: {
+					time: 'asc',
+				},
+			});
+		} else {
+			response = await prisma.plsql.findMany();
+		}
 		res.status(200).json(response);
+	} catch (error) {
+		res.status(500).json({ msg: error.message });
+	}
+};
+
+const getCalculatedApiPerUser = async (req, res) => {
+	const { sort } = req.query;
+	try {
+		const response = await prisma.apiFunction.findMany({
+			include: {
+				user: true,
+			},
+		});
+
+		const groupedData = {};
+
+		response.forEach((item) => {
+			const nim = item.user.nim;
+
+			if (!groupedData[nim]) {
+				groupedData[nim] = {
+					nim: nim,
+					count: 0,
+					userId: item.userId,
+				};
+			}
+
+			groupedData[nim].count++;
+		});
+
+		// Mengubah objek ke dalam array
+		let data = Object.values(groupedData);
+
+		if (sort == 'desc') {
+			data = data.slice().sort((a, b) => b.count - a.count);
+		} else if (sort == 'asc') {
+			data = data.slice().sort((a, b) => a.count - b.count);
+		}
+
+		res.status(200).json(data);
+	} catch (error) {
+		res.status(500).json({ msg: error.message });
+	}
+};
+
+const getCalculatedPlsqlPerUser = async (req, res) => {
+	const { sort } = req.query;
+	try {
+		const response = await prisma.plsql.findMany({
+			include: {
+				user: true,
+			},
+		});
+
+		const groupedData = {};
+
+		response.forEach((item) => {
+			const nim = item.user.nim;
+
+			if (!groupedData[nim]) {
+				groupedData[nim] = {
+					nim: nim,
+					count: 0,
+					userId: item.userId,
+				};
+			}
+
+			groupedData[nim].count++;
+		});
+
+		// Mengubah objek ke dalam array
+		let data = Object.values(groupedData);
+
+		if (sort == 'desc') {
+			data = data.slice().sort((a, b) => b.count - a.count);
+		} else if (sort == 'asc') {
+			data = data.slice().sort((a, b) => a.count - b.count);
+		}
+
+		res.status(200).json(data);
 	} catch (error) {
 		res.status(500).json({ msg: error.message });
 	}
@@ -83,18 +200,35 @@ const createCalculatedPlsql = async (req, res) => {
 	}
 };
 
-const getComputationById = async (req, res) => {
-	// try {
-	// 	const response = await prisma.api.findUnique({
-	// 		where: {
-	// 			id: Number(req.params.id),
-	// 		},
-	// 	});
-	// 	res.status(200).json(response);
-	// } catch (error) {
-	// 	res.status(404).json({ msg: error.message });
-	// }
+const getProcessing = async (req, res) => {
+	try {
+		data = await prisma.apiFunction.findMany();
+		const fastestTime = findFastestProcessingTime(data);
+		const slowestTime = findSlowestProcessingTime(data);
+		const averageTime = calculateAverageProcessingTime(data);
+		const resultObject = {
+			fastestProcessingTime: fastestTime,
+			slowestProcessingTime: slowestTime,
+			averageProcessingTime: averageTime,
+		};
+
+		res.status(200).json(resultObject);
+	} catch (error) {
+		res.status(500).json({ msg: error.message });
+	}
 };
+// const getComputationById = async (req, res) => {
+// try {
+// 	const response = await prisma.api.findUnique({
+// 		where: {
+// 			id: Number(req.params.id),
+// 		},
+// 	});
+// 	res.status(200).json(response);
+// } catch (error) {
+// 	res.status(404).json({ msg: error.message });
+// }
+// };
 
 // const updateComputation = async (req, res) => {
 // 	try {
@@ -131,9 +265,12 @@ const getComputationById = async (req, res) => {
 module.exports = {
 	getCalculatedPlsql,
 	getCalculatedApi,
-	getComputationById,
+	getCalculatedPlsqlPerUser,
+	getCalculatedApiPerUser,
 	createCalculatedApi,
 	createCalculatedPlsql,
+	getProcessing,
+	// getComputationById,
 	// updateComputation,
 	// deleteComputation,
 };
