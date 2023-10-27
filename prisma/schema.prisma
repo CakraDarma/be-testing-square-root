@@ -32,14 +32,8 @@ model ApiFunction {
 
 model User {
   id        String               @id @default(uuid())
-  // roleId   String        @default("1")
-  // role     Role          @relation(fields: [roleId], references: [id])
-  email     String               @unique
   password  String
-  nama      String
-  nim       String
-  otp       Int
-  status    String               @default("tidak aktif")
+  nim       String               @unique
   api       ApiFunction[]
   plsql     Plsql[]
   userToken User_refresh_token[]

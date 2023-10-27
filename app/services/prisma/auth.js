@@ -10,73 +10,48 @@ const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
-const { otpMail } = require('../mail');
-
 const signup = async (req) => {
-	const { email, password, nama, nim } = req.body;
+	const { password, nim } = req.body;
 
-	// jika email dan status tidak aktif
 	let result = await prisma.user.findFirst({
 		where: {
-			AND: [{ email }],
+			AND: [{ nim }],
 		},
 	});
 
 	// kalau ada user tapi blm aktif update
-	if (result && result.status == 'tidak aktif') {
-		result = await prisma.user.update({
-			where: {
-				email: result.email,
-			},
-			data: {
-				nama,
-				email,
-				nim,
-				password: await bcrypt.hash(password, 12),
-				otp: Math.floor(Math.random() * 9999),
-			},
-		});
+	if (result) {
+		return 'NIM Sudah terdaftar';
 	} else if (result == null) {
 		// kalau tidak ada dan belum aktif buat saja baru
 
 		result = await prisma.user.create({
 			data: {
-				nama,
-				email,
 				nim,
 				password: await bcrypt.hash(password, 12),
-				otp: Math.floor(Math.random() * 9999),
 			},
 		});
-	} else if (result && result.status == 'aktif') {
-		return 'Email Sudah terdaftar';
 	}
-	await otpMail(email, result);
 	delete result.id;
 	delete result.password;
-	delete result.otp;
 	return result;
 };
 
 const signin = async (req) => {
-	const { email, password } = req.body;
+	const { nim, password } = req.body;
 
-	if (!email || !password) {
-		throw new BadRequestError('Please provide email and password');
+	if (!nim || !password) {
+		throw new BadRequestError('Please provide nim and password');
 	}
 
 	let result = await prisma.user.findUnique({
 		where: {
-			email: email,
+			nim: nim,
 		},
 	});
 
 	if (!result) {
 		throw new UnauthorizedError('Invalid Credentials');
-	}
-
-	if (result.status !== 'aktif') {
-		throw new UnauthorizedError('Akun anda belum aktif');
 	}
 
 	const isPasswordCorrect = await bcrypt.compare(password, result.password);
@@ -93,41 +68,15 @@ const signin = async (req) => {
 		userId: result.id,
 	});
 
-	return { token, refreshToken, email: result.email };
-};
-
-const active = async (req) => {
-	const { otp, email } = req.body;
-	const check = await prisma.user.findFirst({
-		where: {
-			email,
-		},
-	});
-
-	if (!check) throw new NotFoundError('User belum terdaftar');
-
-	if (check && check.otp !== otp) throw new BadRequestError('Kode otp salah');
-
-	const result = await prisma.user.update({
-		where: {
-			email,
-		},
-		data: {
-			status: 'aktif',
-		},
-	});
-
-	delete result.password;
-
-	return result;
+	return { token, refreshToken, nim: result.nim };
 };
 
 const change = async (req) => {
-	const { currentPassword, newPassword, email } = req.body;
+	const { currentPassword, newPassword, nim } = req.body;
 
 	const check = await prisma.user.findFirst({
 		where: {
-			email,
+			nim,
 		},
 	});
 
@@ -142,7 +91,7 @@ const change = async (req) => {
 
 	const result = await prisma.user.update({
 		where: {
-			email,
+			nim,
 		},
 		data: {
 			password: await bcrypt.hash(newPassword, 12),
@@ -155,4 +104,4 @@ const change = async (req) => {
 
 	return result;
 };
-module.exports = { signin, signup, active, change };
+module.exports = { signin, signup, change };

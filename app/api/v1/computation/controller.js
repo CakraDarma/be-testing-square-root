@@ -36,6 +36,7 @@ const createCalculatedApi = async (req, res) => {
 				number: number,
 				result: squareRootNumber,
 				time: timingPerformace,
+				userId: req.user.userId,
 			},
 		});
 		res.status(201).json(computation);
@@ -73,6 +74,7 @@ const createCalculatedPlsql = async (req, res) => {
 				number: number,
 				result: squareRoot,
 				time: parseFloat(parseFloat(timingPerformace).toFixed(4) / 10000),
+				userId: req.user.userId,
 			},
 		});
 		res.status(201).json(computation);
