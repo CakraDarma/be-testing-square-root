@@ -63,10 +63,10 @@ const signin = async (req) => {
 
 	const refreshToken = createRefreshJWT({ payload: createTokenUser(result) });
 
-	await createUserRefreshToken({
-		refreshToken,
-		userId: result.id,
-	});
+	// await createUserRefreshToken({
+	// 	refreshToken,
+	// 	userId: result.id,
+	// });
 
 	return { token, refreshToken, nim: result.nim };
 };
