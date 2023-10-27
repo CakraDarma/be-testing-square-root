@@ -200,7 +200,25 @@ const createCalculatedPlsql = async (req, res) => {
 	}
 };
 
-const getProcessing = async (req, res) => {
+const getProcessingApi = async (req, res) => {
+	try {
+		data = await prisma.apiFunction.findMany();
+		const fastestTime = findFastestProcessingTime(data);
+		const slowestTime = findSlowestProcessingTime(data);
+		const averageTime = calculateAverageProcessingTime(data);
+		const resultObject = {
+			fastestProcessingTime: fastestTime,
+			slowestProcessingTime: slowestTime,
+			averageProcessingTime: averageTime,
+		};
+
+		res.status(200).json(resultObject);
+	} catch (error) {
+		res.status(500).json({ msg: error.message });
+	}
+};
+
+const getProcessingPlsql = async (req, res) => {
 	try {
 		data = await prisma.apiFunction.findMany();
 		const fastestTime = findFastestProcessingTime(data);
@@ -269,7 +287,8 @@ module.exports = {
 	getCalculatedApiPerUser,
 	createCalculatedApi,
 	createCalculatedPlsql,
-	getProcessing,
+	getProcessingApi,
+	getProcessingPlsql,
 	// getComputationById,
 	// updateComputation,
 	// deleteComputation,

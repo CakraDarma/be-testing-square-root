@@ -6,7 +6,8 @@ const {
 	getCalculatedPlsqlPerUser,
 	createCalculatedApi,
 	createCalculatedPlsql,
-	getProcessing,
+	getProcessingApi,
+	getProcessingPlsql,
 } = require('./controller.js');
 
 const { authenticateUser } = require('../../../middlewares/auth');
@@ -23,6 +24,7 @@ router.get(
 	authenticateUser,
 	getCalculatedPlsqlPerUser
 );
-router.get('/process', authenticateUser, getProcessing);
+router.get('/process-api', authenticateUser, getProcessingApi);
+router.get('/process-plsql', authenticateUser, getProcessingPlsql);
 
 module.exports = router;
