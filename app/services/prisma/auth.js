@@ -21,7 +21,7 @@ const signup = async (req) => {
 
 	// kalau ada user tapi blm aktif update
 	if (result) {
-		return 'NIM Sudah terdaftar';
+		throw new BadRequestError('NIM SUDAH TERDAFTAR');
 	} else if (result == null) {
 		// kalau tidak ada dan belum aktif buat saja baru
 
