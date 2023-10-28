@@ -16,18 +16,43 @@ const getCalculatedApi = async (req, res) => {
 		let response;
 		if (sort == 'desc') {
 			response = await prisma.apiFunction.findMany({
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
 				orderBy: {
 					time: 'desc',
 				},
 			});
 		} else if (sort == 'asc') {
 			response = await prisma.apiFunction.findMany({
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
 				orderBy: {
 					time: 'asc',
 				},
 			});
 		} else {
-			response = await prisma.apiFunction.findMany();
+			response = await prisma.apiFunction.findMany({
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
+			});
 		}
 		res.status(200).json(response);
 	} catch (error) {
@@ -36,22 +61,48 @@ const getCalculatedApi = async (req, res) => {
 };
 
 const getCalculatedPlsql = async (req, res) => {
+	const { sort } = req.query;
 	try {
 		let response;
 		if (sort == 'desc') {
 			response = await prisma.plsql.findMany({
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
 				orderBy: {
 					time: 'desc',
 				},
 			});
 		} else if (sort == 'asc') {
 			response = await prisma.plsql.findMany({
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
 				orderBy: {
 					time: 'asc',
 				},
 			});
 		} else {
-			response = await prisma.plsql.findMany();
+			response = await prisma.plsql.findMany({
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
+			});
 		}
 		res.status(200).json(response);
 	} catch (error) {
@@ -86,6 +137,8 @@ const getCalculatedApiPerUser = async (req, res) => {
 
 		// Mengubah objek ke dalam array
 		let data = Object.values(groupedData);
+
+		console.log(data);
 
 		if (sort == 'desc') {
 			data = data.slice().sort((a, b) => b.count - a.count);
