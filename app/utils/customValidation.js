@@ -2,7 +2,7 @@ const message = {
 	string: {
 		'any.required': '{{#label}} is required',
 		'string.alphanum': '{{#label}} must only contain alpha-numeric characters',
-		'string.base': '{{#label}} must be a string',
+		'string.base': 'Inputan harus berupa angka yang valid',
 		'string.base64': '{{#label}} must be a valid base64 string',
 		'string.creditCard': '{{#label}} must be a credit card',
 		'string.dataUri': '{{#label}} must be a valid dataUri string',
@@ -23,8 +23,7 @@ const message = {
 		'string.lowercase': '{{#label}} must only contain lowercase characters',
 		'string.max':
 			'{{#label}} length must be less than or equal to {{#limit}} characters long',
-		'string.min':
-			'{{#label}} length must be at least {{#limit}} characters longs',
+		'string.min': 'Panjang {{#label}} minimal {{#limit}} karakter',
 		'string.normalize':
 			'{{#label}} must be unicode normalized in the {{#form}} form',
 		'string.token':

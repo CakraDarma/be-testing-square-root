@@ -5,6 +5,8 @@ const {
 	change,
 } = require('../../../services/prisma/auth');
 
+const { schema } = require('./validator');
+
 const { StatusCodes } = require('http-status-codes');
 
 const signinCms = async (req, res, next) => {
@@ -21,13 +23,14 @@ const signinCms = async (req, res, next) => {
 
 const signupCms = async (req, res, next) => {
 	try {
+		await schema.validateAsync(req.body);
 		const result = await signup(req);
 
 		res.status(StatusCodes.CREATED).json({
 			data: result,
 		});
 	} catch (err) {
-		next(err);
+		res.status(400).json({ msg: err.message });
 	}
 };
 
