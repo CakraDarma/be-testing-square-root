@@ -273,7 +273,7 @@ const getProcessingApi = async (req, res) => {
 
 const getProcessingPlsql = async (req, res) => {
 	try {
-		data = await prisma.apiFunction.findMany();
+		data = await prisma.plsql.findMany();
 		const fastestTime = findFastestProcessingTime(data);
 		const slowestTime = findSlowestProcessingTime(data);
 		const averageTime = calculateAverageProcessingTime(data);
@@ -284,6 +284,123 @@ const getProcessingPlsql = async (req, res) => {
 		};
 
 		res.status(200).json(resultObject);
+	} catch (error) {
+		res.status(500).json({ msg: error.message });
+	}
+};
+
+const getUserCalculatedApi = async (req, res) => {
+	const { sort } = req.query;
+	try {
+		let response;
+		if (sort == 'desc') {
+			response = await prisma.apiFunction.findMany({
+				where: {
+					userId: req.user.userId,
+				},
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
+				orderBy: {
+					time: 'desc',
+				},
+			});
+		} else if (sort == 'asc') {
+			response = await prisma.apiFunction.findMany({
+				where: {
+					userId: req.user.userId,
+				},
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
+				orderBy: {
+					time: 'asc',
+				},
+			});
+		} else {
+			response = await prisma.apiFunction.findMany({
+				where: {
+					userId: req.user.userId,
+				},
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
+			});
+		}
+		res.status(200).json(response);
+	} catch (error) {
+		res.status(500).json({ msg: error.message });
+	}
+};
+const getUserCalculatedPlsql = async (req, res) => {
+	const { sort } = req.query;
+	try {
+		let response;
+		if (sort == 'desc') {
+			response = await prisma.plsql.findMany({
+				where: {
+					userId: req.user.userId,
+				},
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
+				orderBy: {
+					time: 'desc',
+				},
+			});
+		} else if (sort == 'asc') {
+			response = await prisma.plsql.findMany({
+				where: {
+					userId: req.user.userId,
+				},
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
+				orderBy: {
+					time: 'asc',
+				},
+			});
+		} else {
+			response = await prisma.plsql.findMany({
+				where: {
+					userId: req.user.userId,
+				},
+				include: {
+					user: {
+						select: {
+							id: true,
+							nim: true,
+						},
+					},
+				},
+			});
+		}
+		res.status(200).json(response);
 	} catch (error) {
 		res.status(500).json({ msg: error.message });
 	}
@@ -342,6 +459,8 @@ module.exports = {
 	createCalculatedPlsql,
 	getProcessingApi,
 	getProcessingPlsql,
+	getUserCalculatedApi,
+	getUserCalculatedPlsql,
 	// getComputationById,
 	// updateComputation,
 	// deleteComputation,
